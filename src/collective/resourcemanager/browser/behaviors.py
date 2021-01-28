@@ -10,16 +10,24 @@ from zope.interface import provider, implementer, Interface
 from zope.interface import Invalid
 from collective.resourcemanager.browser.widget import NamedRSImageWidget
 from .utils import set_url_as_image
+from six import BytesIO
+import PIL.Image
 
 
 def allowed_type(namedblob):
+
+    try:
+        img = PIL.Image.open(BytesIO(namedblob.data))
+    except:
+        raise Invalid("Not a valid image")
+        pass
     if namedblob.contentType not in ('image/gif', 'image/jpeg', 'image/png'):
         raise Invalid("Only gif, jpg and png files are allowed")
+
     return True
 
 class IBrowseRS(Interface):
     pass
-
 
 @provider(IFormFieldProvider)
 class IBrowseRSBehavior(model.Schema):
