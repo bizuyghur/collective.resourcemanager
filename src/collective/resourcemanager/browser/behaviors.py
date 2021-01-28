@@ -7,10 +7,15 @@ from plone.supermodel import model
 from zope import schema
 from zope.component import adapter
 from zope.interface import provider, implementer, Interface
-
+from zope.interface import Invalid
 from collective.resourcemanager.browser.widget import NamedRSImageWidget
 from .utils import set_url_as_image
 
+
+def allowed_type(namedblob):
+    if namedblob.contentType not in ('image/gif', 'image/jpeg', 'image/png'):
+        raise Invalid("Only gif, jpg and png files are allowed")
+    return True
 
 class IBrowseRS(Interface):
     pass
@@ -23,6 +28,7 @@ class IBrowseRSBehavior(model.Schema):
         title=u"Image",
         description=u"Upload image or browse resources",
         required=False,
+        constraint=allowed_type
     )
     directives.widget(
         'image',
