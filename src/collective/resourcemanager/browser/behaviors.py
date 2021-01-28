@@ -14,7 +14,7 @@ from six import BytesIO
 import PIL.Image
 
 
-def allowed_type(namedblob):
+def validate_image(namedblob):
 
     try:
         img = PIL.Image.open(BytesIO(namedblob.data))
@@ -36,7 +36,7 @@ class IBrowseRSBehavior(model.Schema):
         title=u"Image",
         description=u"Upload image or browse resources",
         required=False,
-        constraint=allowed_type
+        constraint=validate_image
     )
     directives.widget(
         'image',
